@@ -25,7 +25,9 @@ begin
 
   app.Post('/arquivo/bancodados', registry.PostBancoDados);
 
-  app.Post('/arquivo/bancodados/:cnpj', registry.PostBancoDadosCnpj);
+  app.Post('/arquivo/bancodados/:cnpj/:tipo/:nomearquivo/:natual/:narquivos', registry.PostBancoDadosCnpj);
+
+  app.Get('/arquivo/bancodados/:cnpj', registry.GetBancoDadosCnpj);
 
   app.Start;
 

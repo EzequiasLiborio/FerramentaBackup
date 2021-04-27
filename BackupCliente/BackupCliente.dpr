@@ -3,7 +3,8 @@ program BackupCliente;
 uses
   Vcl.Forms,
   principal in 'principal.pas' {Form1},
-  model.bancodedados in '..\model\model.bancodedados.pas';
+  model.bancodedados in '..\model\model.bancodedados.pas',
+  utilitarios in '..\controllerCpt\utilitarios.pas';
 
 {$R *.res}
 

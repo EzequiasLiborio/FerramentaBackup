@@ -15,19 +15,19 @@ type
     Fcnpj: string;
     FnumeArqAtual: integer;
     FquantArq: integer;
-    FbancoDados: TmemoryStream;
     FnomeArquivo: string;
+    Fbase64str: AnsiString;
     procedure Setcnpj(const Value: string);
     procedure SetnumeArqAtual(const Value: integer);
     procedure SetquantArq(const Value: integer);
-    procedure SetbancoDados(const Value: TmemoryStream);
     procedure SetnomeArquivo(const Value: string);
+    procedure Setbase64str(const Value: AnsiString);
   published
     property cnpj: string read Fcnpj write Setcnpj;
     property quantArq: integer read FquantArq write SetquantArq;
     property numeArqAtual: integer read FnumeArqAtual write SetnumeArqAtual;
-    property bancoDados: TmemoryStream read FbancoDados write SetbancoDados;
-    property nomeArquivo: string read Fnomearquivo write Setnomearquivo;
+    property base64str: AnsiString read Fbase64str write Setbase64str;
+    property nomeArquivo: string read FnomeArquivo write SetnomeArquivo;
   end;
 
 implementation
@@ -40,18 +40,18 @@ uses
 constructor TbancoDadosInfo.create;
 begin
   inherited create;
-  bancoDados := TmemoryStream.create;
+ //  base64str := TAnsiString.create;
 end;
 
 destructor TbancoDadosInfo.Destroy;
 begin
-  FreeAndNil(bancoDados);
+  // FreeAndNil(base64str);
   inherited;
 end;
 
-procedure TbancoDadosInfo.SetbancoDados(const Value: TmemoryStream);
+procedure TbancoDadosInfo.Setbase64str(const Value: AnsiString);
 begin
-  FbancoDados := Value;
+  Fbase64str := Value;
 end;
 
 procedure TbancoDadosInfo.Setcnpj(const Value: string);
