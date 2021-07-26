@@ -9,11 +9,13 @@ type
 
   private
     function DesConverterBancoDados(LocalArquivo, base64: string): Boolean;
-
   public
+    constructor Create; virtual;
+    destructor Destroy; override;
     procedure PostBancoDados(Req: THorseRequest; Res: THorseResponse; Next: TProc);
     procedure PostBancoDadosCnpj(Req: THorseRequest; Res: THorseResponse; Next: TProc);
     procedure GetBancoDadosCnpj(Req: THorseRequest; Res: THorseResponse; Next: TProc);
+    procedure PostArquivo(Req: THorseRequest; Res: THorseResponse; Next: TProc);
   end;
 
 var
@@ -22,13 +24,28 @@ var
 implementation
 
 uses
-  model.bancodedados, System.SysUtils, System.Classes;
+  model.bancodedados, System.SysUtils, System.Classes, model.dao.arquivosINI, model.dao.bancoDados,
+  controller.confpublic;
 
 { Tregistry }
 
-procedure Tregistry.GetBancoDadosCnpj(Req: THorseRequest; Res: THorseResponse; Next: TProc);
+destructor Tregistry.Destroy;
 begin
-  Res.Send('240421');
+  FreeAndNil(arquivosINI);
+  FreeAndNil(bancoDados);
+
+  inherited;
+end;
+
+constructor Tregistry.Create;
+begin
+  inherited Create;
+
+  arquivosINI := TarquivosINI.Create;
+  arquivosINI.WorkDirectoryAbrir;
+
+  bancoDados := TbancoDados.Create;
+
 end;
 
 function Tregistry.DesConverterBancoDados(LocalArquivo, base64: string): Boolean;
@@ -59,33 +76,30 @@ begin
 
 end;
 
-procedure Tregistry.PostBancoDados(Req: THorseRequest; Res: THorseResponse; Next: TProc);
+procedure Tregistry.PostArquivo(Req: THorseRequest; Res: THorseResponse; Next: TProc);
 var
-  bancoDadosInfo: TbancoDadosInfo;
-  lBody: TJSONObject;
-  localArq: string;
+  Arquivo: TMemoryStream;
+  localArq, cnpj, tipo, nomeArquivo, localArquivSer: string;
 begin
 
   try
-    bancoDadosInfo := TbancoDadosInfo.Create;
 
-    lBody := TJSONObject.Create;
+    cnpj := Req.Params.Items['cpfcnpj'];
+    tipo := Req.Params.Items['tipo'];
+    nomeArquivo := Req.Params.Items['nomearquivo'];
+    localArquivSer := Req.Params.Items['localarquiv'];
 
-    lBody := Req.Body<TJSONObject>;
+    localArq := workDirBackups + '\' + cnpj + '\'+ localArquivSer;
 
-    bancoDadosInfo := TJson.JsonToObject<TbancoDadosInfo>(lBody);
+    ForceDirectories(localArq);
 
-    with bancoDadosInfo do
-    begin
-      localArq := 'C:\Diversos\' + cnpj + '\';
+    Arquivo := Req.Body<TMemoryStream>;
 
-      DesConverterBancoDados(localArq + '\' + nomeArquivo, base64str);
-
-    end;
+    Arquivo.SaveToFile(localArq + '\' + nomeArquivo);
 
     Res.Status(201);
   finally
-    FreeAndNil(bancoDadosInfo);
+    FreeAndNil(Arquivo);
   end;
 
 end;
@@ -99,14 +113,14 @@ begin
 
   try
 
-    cnpj := Req.Params.Items['cnpj'];
+    cnpj := Req.Params.Items['cpfcnpj'];
     tipo := Req.Params.Items['tipo'];
     nomeArquivo := Req.Params.Items['nomearquivo'];
 
     natual := Req.Params.Items['natual'].ToInteger;
     narquivos := Req.Params.Items['narquivos'].ToInteger;
 
-    localArq := 'C:\Diversos\' + cnpj + '\';
+    localArq := workDirBackups + '\' + cnpj + '\BDs';
 
     ForceDirectories(localArq);
 
@@ -117,7 +131,7 @@ begin
     Res.Status(201);
 
   finally
-    // freeAndNil(bd);
+    FreeAndNil(bd);
   end;
 
 end;

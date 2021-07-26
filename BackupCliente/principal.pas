@@ -214,8 +214,7 @@ begin
     RESTRequest1.Execute;
 
   finally
-    mmResponse.Lines.add(RESTRequest1.Response.StatusCode.ToString + '  ' +
-      RESTRequest1.Response.StatusText);
+    mmResponse.Lines.add(RESTRequest1.Response.StatusCode.ToString + '  ' + RESTRequest1.Response.StatusText);
     mmResponse.Lines.add(RESTRequest1.Response.ErrorMessage);
     mmResponse.Lines.AddStrings(RESTRequest1.Response.Headers);
 
@@ -276,8 +275,8 @@ begin
             FB.VendorLib := edtFerramentaBD.Text;
 
             FDIBBackup.DriverLink := FB;
-            localBackup := ExtractFileDir(Application.ExeName) + '\' + ExtractNome(edtLocalBD.Text)
-              + FormatDateTime('ddmmyyyhhnnsszzz', now) + '.fbk';
+            localBackup := ExtractFileDir(Application.ExeName) + '\' + ExtractNome(edtLocalBD.Text) +
+              FormatDateTime('ddmmyyyhhnnsszzz', now) + '.fbk';
 
           end;
 
@@ -305,8 +304,8 @@ begin
     except
       on E: Exception do
       begin
-        MessageDlg('Erro ao gerar backup! - linha:' + sLineBreak + ' - ' + E.Message,
-          TMsgDlgType.mtError, [TMsgDlgBtn.mbOK], 0);
+        MessageDlg('Erro ao gerar backup! - linha:' + sLineBreak + ' - ' + E.Message, TMsgDlgType.mtError,
+          [TMsgDlgBtn.mbOK], 0);
 
         Result := '';
       end;
@@ -368,8 +367,7 @@ begin
 
   finally
 
-    mmResponse.Lines.add(RESTRequest1.Response.StatusCode.ToString + '  ' +
-      RESTRequest1.Response.StatusText);
+    mmResponse.Lines.add(RESTRequest1.Response.StatusCode.ToString + '  ' + RESTRequest1.Response.StatusText);
     mmResponse.Lines.add(RESTRequest1.Response.ErrorMessage);
     mmResponse.Lines.AddStrings(RESTRequest1.Response.Headers);
 
@@ -388,7 +386,10 @@ begin
   RESTClient1.ResetToDefaults;
   RESTRequest1.ResetToDefaults;
   RESTResponse1.ResetToDefaults;
-  RESTClient1.BaseURL := 'http://' + Trim(edtUrl.Text) + ':9000';
+  RESTClient1.BaseURL := 'http://localhost:8082';
+
+
+
 
 end;
 
